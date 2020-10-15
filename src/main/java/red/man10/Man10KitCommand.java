@@ -6,6 +6,9 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import javax.swing.*;
+import java.util.UUID;
+
 /**
  * Created by takatronix on 2017/03/06.
  */
@@ -22,6 +25,29 @@ public class Man10KitCommand implements CommandExecutor {
         if (args.length == 0) {
             showHelp(sender);
             return false;
+        }
+
+        ////////////////////////////////////
+        //          jail
+        ////////////////////////////////////
+        if (args[0].equalsIgnoreCase("jail")) {
+
+            if (args.length != 2) {
+                sender.sendMessage("/mkit jail [username]");
+                return false;
+            }
+            Player t = Bukkit.getPlayer(args[1]);
+            Bukkit.getLogger().info(args[1]);
+
+            if(t.isOnline() == false){
+                Bukkit.getLogger().info("player is not online");
+                sender.sendMessage(t.getName() +"はオンラインではありません");
+                return false;
+            }
+            plugin.push(t);
+            Bukkit.getLogger().info("_jail");
+            plugin.load(t,"_jail");
+            return true;
         }
         ////////////////////////////////////
         //          push
@@ -51,20 +77,34 @@ public class Man10KitCommand implements CommandExecutor {
             return true;
         }
         ////////////////////////////////////
-        //          pop
+        //          pop or unjail
         ////////////////////////////////////
-        if (args[0].equalsIgnoreCase("pop")) {
+        if ((args[0].equalsIgnoreCase("pop")) || (args[0].equalsIgnoreCase("unjail"))) {
+            //    引数がある場合
 
-            Bukkit.getLogger().info("pop");
-            if (args.length != 3) {
-                sender.sendMessage("/mkit pop [UserName] [UserName]");
-                return false;
+            if (args.length == 2) {
+                String name = args[1];
+                Player p = Bukkit.getPlayer(name);
+                p.sendMessage(args[0]);
+                if(p == null){
+                    sender.sendMessage(name+"はオフラインです");
+                    return false;
+                }
+                if(plugin.pop(p)){
+                    sender.sendMessage(name+"のユーザーデータを復元しました");
+                }else{
+                    sender.sendMessage(name+"のユーザーデータは存在しない");
+                }
+                return true;
             }
 
-            Player t = Bukkit.getPlayer(args[1]);
+            //      ユーザーコマンド
+            if (sender instanceof Player){
+                Player p = (Player) sender;
+                plugin.pop(p);
+                return true;
+            }
 
-
-            plugin.pop(t);
             return true;
         }
         ////////////////////////////////////
@@ -73,13 +113,13 @@ public class Man10KitCommand implements CommandExecutor {
         if (args[0].equalsIgnoreCase("list")) {
 
             Bukkit.getLogger().info("list");
-            if (args.length != 2) {
+            if (args.length != 1) {
                 sender.sendMessage("/mkit list");
                 return false;
             }
 
-            Player t = Bukkit.getPlayer(args[1]);
-            plugin.list(t);
+            Player p = (Player) sender;
+            plugin.list(p);
             return true;
         }
         ////////////////////////////////////
@@ -92,9 +132,8 @@ public class Man10KitCommand implements CommandExecutor {
                 sender.sendMessage("/mkit save [KitName]");
                 return false;
             }
-
-            Player t = Bukkit.getPlayer(args[1]);
-            plugin.save(t,args[2]);
+            Player p = (Player) sender;
+            plugin.save(p,args[1]);
             return true;
         }
         ////////////////////////////////////
@@ -107,11 +146,9 @@ public class Man10KitCommand implements CommandExecutor {
                 sender.sendMessage("/mkit load [KitName]");
                 return false;
             }
+            Player p = (Player) sender;
 
-            Player t = Bukkit.getPlayer(args[1]);
-
-
-            plugin.load(t,args[2]);
+            plugin.load(p,args[1]);
             return true;
         }
         ////////////////////////////////////
@@ -133,7 +170,7 @@ public class Man10KitCommand implements CommandExecutor {
             }
 
 
-            plugin.load(t,args[3]);
+            plugin.load(t,args[2]);
             return true;
         }
         ////////////////////////////////////
@@ -148,7 +185,7 @@ public class Man10KitCommand implements CommandExecutor {
             }
 
             Player t = (Player) sender;
-            plugin.delete(t,args[2]);
+            plugin.delete(t,args[1]);
             return true;
         }
         Player t = Bukkit.getPlayer(args[1]);
@@ -164,7 +201,9 @@ public class Man10KitCommand implements CommandExecutor {
                 "/mkit save - Save your inventory to kit\n" +
                 "/mkit delete - Delete a saved kit\n" +
                 "/mkit push - Push user's inventory\n" +
-                "/mkit pop - Pop user's inventory\n"
+                "/mkit pop - Pop user's inventory\n"+
+                "/mkit jail - Apply Jail Kit\n" +
+                "/mkit unuail - Revert user's inventory\n"
         );
     }
 
