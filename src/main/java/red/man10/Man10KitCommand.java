@@ -19,30 +19,13 @@ public class Man10KitCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
-        ////////////////////////////////////
-        //          jail
-        ////////////////////////////////////
-        if (args[0].equalsIgnoreCase("jail")) {
-
-            if (args.length != 2) {
-                sender.sendMessage("/mkit jail [username]");
-                return false;
-            }
-            Player t = Bukkit.getPlayer(args[1]);
-            Bukkit.getLogger().info(args[1]);
-
-            if(t.isOnline() == false){
-                Bukkit.getLogger().info("player is not online");
-                sender.sendMessage(t.getName() +"はオンラインではありません");
-                return false;
-            }
-            plugin.push(t);
-            Bukkit.getLogger().info("_jail");
-            plugin.load(t,"_jail");
-            return true;
+        if (args.length == 0) {
+            showHelp(sender);
+            return false;
         }
-
-
+        ////////////////////////////////////
+        //          push
+        ////////////////////////////////////
         if (args[0].equalsIgnoreCase("push")) {
 
 
@@ -65,9 +48,70 @@ public class Man10KitCommand implements CommandExecutor {
                 plugin.push(p);
                 return true;
             }
+            return true;
+        }
+        ////////////////////////////////////
+        //          pop
+        ////////////////////////////////////
+        if (args[0].equalsIgnoreCase("pop")) {
+
+            Bukkit.getLogger().info("pop");
+            if (args.length != 3) {
+                sender.sendMessage("/mkit pop [UserName] [UserName]");
+                return false;
+            }
+
+            Player t = Bukkit.getPlayer(args[1]);
 
 
+            plugin.pop(t);
+            return true;
+        }
+        ////////////////////////////////////
+        //          list
+        ////////////////////////////////////
+        if (args[0].equalsIgnoreCase("list")) {
 
+            Bukkit.getLogger().info("list");
+            if (args.length != 2) {
+                sender.sendMessage("/mkit list");
+                return false;
+            }
+
+            Player t = Bukkit.getPlayer(args[1]);
+            plugin.list(t);
+            return true;
+        }
+        ////////////////////////////////////
+        //          save
+        ////////////////////////////////////
+        if (args[0].equalsIgnoreCase("save")) {
+
+            Bukkit.getLogger().info("save");
+            if (args.length != 2) {
+                sender.sendMessage("/mkit save [KitName]");
+                return false;
+            }
+
+            Player t = Bukkit.getPlayer(args[1]);
+            plugin.save(t,args[2]);
+            return true;
+        }
+        ////////////////////////////////////
+        //          load
+        ////////////////////////////////////
+        if (args[0].equalsIgnoreCase("load")) {
+
+            Bukkit.getLogger().info("load");
+            if (args.length != 2) {
+                sender.sendMessage("/mkit load [KitName]");
+                return false;
+            }
+
+            Player t = Bukkit.getPlayer(args[1]);
+
+
+            plugin.load(t,args[2]);
             return true;
         }
         ////////////////////////////////////
@@ -89,146 +133,26 @@ public class Man10KitCommand implements CommandExecutor {
             }
 
 
-            plugin.load(t,args[2]);
+            plugin.load(t,args[3]);
             return true;
         }
+        ////////////////////////////////////
+        //          delete
+        ////////////////////////////////////
+        if (args[0].equalsIgnoreCase("delete")) {
 
-
-        if ((args[0].equalsIgnoreCase("pop")) || (args[0].equalsIgnoreCase("unjail"))) {
-            //    引数がある場合
-
-            if (args.length == 2) {
-                String name = args[1];
-                Player p = Bukkit.getPlayer(name);
-                p.sendMessage(args[0]);
-                if(p == null){
-                    sender.sendMessage(name+"はオフラインです");
-                    return false;
-                }
-                if(plugin.pop(p)){
-                    sender.sendMessage(name+"のユーザーデータを復元しました");
-                }else{
-                    sender.sendMessage(name+"のユーザーデータは存在しない");
-                }
-                return true;
+            Bukkit.getLogger().info("delete");
+            if (args.length != 2) {
+                sender.sendMessage("/mkit set [KitName]");
+                return false;
             }
 
-            //      ユーザーコマンド
-            if (sender instanceof Player){
-                Player p = (Player) sender;
-                plugin.pop(p);
-                return true;
-            }
-
+            Player t = (Player) sender;
+            plugin.delete(t,args[2]);
             return true;
         }
-
-
-
-
-
-        if(sender instanceof Player)
-        {
-            Player p = (Player) sender;
-
-            //      引数がない場合
-            if (args.length < 1) {
-                showHelp(p);
-                return true;
-            }
-
-            if (args[0].equalsIgnoreCase("help")) {
-                showHelp(p);
-                return true;
-            }
-
-
-            ////////////////////////////////////
-            //          save
-            ////////////////////////////////////
-            if (args[0].equalsIgnoreCase("save")) {
-
-                if (args.length <= 1) {
-                    p.sendMessage("/mkit save [KitName]");
-                    return false;
-                }
-
-                plugin.save(p,args[1]);
-                return true;
-            }
-
-            ////////////////////////////////////
-            //          Load
-            ////////////////////////////////////
-            if (args[0].equalsIgnoreCase("load")) {
-
-                if (args.length <= 1) {
-                    p.sendMessage("/mkit load [KitName]");
-                    return false;
-                }
-
-                plugin.load(p,args[1]);
-                return true;
-            }
-
-
-
-            /////////////////////////////////////
-            //          delete
-            ////////////////////////////////////
-            if (args[0].equalsIgnoreCase("delete")) {
-
-                if (args.length < 1) {
-                    p.sendMessage("/mkit delete [KitName]");
-                    return false;
-                }
-
-                plugin.delete(p,args[1]);
-                return true;
-            }
-            /////////////////////////////////////
-            //          list
-            ////////////////////////////////////
-            if (args[0].equalsIgnoreCase("list")) {
-
-                plugin.list(p);
-                return true;
-            }
-
-
-
-
-
-            showHelp(p);
-            return true;
-            // The command was executed by a player.
-        }
-        /*
-        else if(sender instanceof ConsoleCommandSender)
-        {
-            ////////////////////////////////////
-            //          set
-            ////////////////////////////////////
-            if (args[0].equalsIgnoreCase("set")) {
-                Bukkit.getLogger().info("set");
-                if (args.length <= 2) {
-                    sender.sendMessage("/mkit set [username] [KitName]");
-                    return false;
-                }
-                Player t = Bukkit.getPlayer(args[1]);
-                if(t.isOnline() == false){
-                    Bukkit.getLogger().info("player is not online");
-                    sender.sendMessage(t.getName() +"はオンラインではありません");
-                    return false;
-                }
-                plugin.load(t,args[2]);
-                return true;
-            }
-            //The command was executed from console.
-        }
-        //The command was executed from console.
-        showHelp(sender);
-*/
+        Player t = Bukkit.getPlayer(args[1]);
+        showHelp(t);
         return true;
     }
     void showHelp(CommandSender p){
@@ -240,8 +164,6 @@ public class Man10KitCommand implements CommandExecutor {
                 "/mkit save - Save your inventory to kit\n" +
                 "/mkit delete - Delete a saved kit\n" +
                 "/mkit push - Push user's inventory\n" +
-                "/mkit jail - Apply Jail Kit\n" +
-                "/mkit unuail - Revert user's inventory\n" +
                 "/mkit pop - Pop user's inventory\n"
         );
     }

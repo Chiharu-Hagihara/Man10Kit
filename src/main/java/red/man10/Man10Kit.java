@@ -81,7 +81,7 @@ public final class Man10Kit extends JavaPlugin {
     //      キットを保存する
     public boolean save(Player p, String kitName){
 
-        PlayerInventory inv= p.getInventory();
+        PlayerInventory inv = p.getInventory();
         //  String kitString = toBase64(inv);
 
         String fileName = kitName;
@@ -115,6 +115,7 @@ public final class Man10Kit extends JavaPlugin {
         File folder = new File(Bukkit.getServer().getPluginManager().getPlugin("Man10Kit").getDataFolder(), File.separator + "Kits");
 
         File[] files = folder.listFiles();  // (a)
+        if (files == null) return false;
         for (File f : files) {
             if (f.isFile()){  // (c)
                 String filename = f.getName();
