@@ -18,3 +18,7 @@ commands:
         permission: man10.kit.push
     mkit pop:
         permission: man10.kit.pop
+    mkit jail:
+        permission: man10.kit.jail
+    mkit unjail:
+        permission: man10.kit.unjail

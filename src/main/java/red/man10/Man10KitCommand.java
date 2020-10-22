@@ -44,10 +44,15 @@ public class Man10KitCommand implements CommandExecutor {
                 sender.sendMessage(t.getName() +"はオンラインではありません");
                 return false;
             }
-            plugin.push(t);
-            Bukkit.getLogger().info("_jail");
-            plugin.load(t,"_jail");
-            return true;
+            //      ユーザーコマンド
+            if (sender instanceof Player){
+                Player p = (Player) sender;
+                plugin.push(p);
+                Bukkit.getLogger().info("_jail");
+                plugin.load(p,"_jail");
+                return true;
+            }
+
         }
         ////////////////////////////////////
         //          push
@@ -192,6 +197,7 @@ public class Man10KitCommand implements CommandExecutor {
         showHelp(t);
         return true;
     }
+
     void showHelp(CommandSender p){
         p.sendMessage("§e==============§d●§f●§a●§e Man10 KitPlugin §d●§f●§a●§e===============");
         p.sendMessage("" +
