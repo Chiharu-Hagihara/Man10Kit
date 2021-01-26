@@ -6,9 +6,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import javax.swing.*;
-import java.util.UUID;
-
 /**
  * Created by takatronix on 2017/03/06.
  */
@@ -21,6 +18,11 @@ public class Man10KitCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+
+        if (!(sender.hasPermission("man10kit.use"))) {
+            sender.sendMessage("§cYou are not allowed to use this command.");
+            return false;
+        }
 
         if (args.length == 0) {
             showHelp(sender);
